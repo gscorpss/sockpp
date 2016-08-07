@@ -3,12 +3,12 @@
 
 #include <arpa/inet.h>
 
-namespace core
+namespace sockpp
 {
-namespace ProtocolFamily
+
+enum class ProtocolFamily
 {
-enum Enum
-{
+    NOTDEFINED = -1,
     /// \brief Local communication
     UNIX = AF_UNIX,
     /// \brief Local communication
@@ -32,12 +32,10 @@ enum Enum
     /// \brief Low level packet interface
     PACKET = AF_PACKET
 };
-} // namespace ProtocolFamily;
 
-namespace ProtocolType
+enum class ProtocolType
 {
-enum Enum
-{
+    NOTDEFINED = -1,
     STREAM = SOCK_STREAM,
     DGRAM = SOCK_DGRAM,
     SEQPACKET = SOCK_SEQPACKET,
@@ -45,8 +43,7 @@ enum Enum
     RDM = SOCK_RDM,
     PACKET = SOCK_PACKET
 };
-} // ProtocolType
 
-}
+} // namespace sockpp
 
 #endif // CORE_NET_ENUMS_H

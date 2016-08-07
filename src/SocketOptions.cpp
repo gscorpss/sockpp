@@ -6,7 +6,7 @@
 #include <errno.h>
 #include <iostream>
 
-namespace core
+namespace sockpp
 {
 
 bool SocketOption::setOptionImpl(int sock, int level, int option, void* value, size_t valSize, const char* optionName)
@@ -15,6 +15,22 @@ bool SocketOption::setOptionImpl(int sock, int level, int option, void* value, s
         return true;
     std::cerr << "Unable to set option '" << optionName << "' with error: (" << errno << ") " << strerror(errno) << std::endl;
     return false;
+}
+
+bool SocketType::get(int& type)
+{
+    int length = sizeof(type);
+    return getsockopt(sock, SOL_SOCKET, SO_TYPE, &type, &length) == 0;
+}
+
+ProtocolType& SocketType::get()
+{
+    int type;
+    int length = sizeof(type);
+    return getsockopt(sock, SOL_SOCKET, SO_TYPE, &type, &length) == 0;
+    if (getsockopt(sock, SOL_SOCKET, SO_TYPE, &type, &length) != 0)
+        return ProtocolType::NOTDEFINED;
+    return ((ProtocolType)type);
 }
 
 bool Fragmentation::probe()
@@ -63,7 +79,6 @@ bool Broadcast::turnOff()
     return this->setOption(SOL_SOCKET, SO_BROADCAST, int(0), "turn off broadcast");
 }
 
-
 bool Multicase::addMembership(const IPv4Addr& multiAddress, const IPv4Addr& selfAddress)
 {
     ip_mreq mReq;
@@ -89,4 +104,6 @@ bool Multicase::setTTL(u_int8_t ttl)
     return this->setOption(IPPROTO_IP, IP_MULTICAST_TTL, ttl, "set multicast ttl");
 }
 
-} // namespace core
+} // namespace sockpp
+
+

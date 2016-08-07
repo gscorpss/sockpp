@@ -8,7 +8,7 @@
 #include <unistd.h>
 #include <errno.h>
 
-namespace core
+namespace sockpp
 {
 /**
  * IPv4Addr implementation
@@ -41,12 +41,12 @@ void IPv4Addr::init(const char* str)
 /**
  * Socket class implementation
  **/
-Socket::Socket(ProtocolFamily::Enum family, ProtocolType::Enum type)
+Socket::Socket(ProtocolFamily family, ProtocolType type)
 : protocolFamily(family)
 , protocolType(type)
 {
-    sock = socket(family, type, 0);
-    if (sock < 0)
+    fd = socket(family, type, 0);
+    if (fd < 0)
     {
         StringStream stream;
         stream << "Unable to create socket family=" << (int)family
@@ -55,14 +55,23 @@ Socket::Socket(ProtocolFamily::Enum family, ProtocolType::Enum type)
     }
 }
 
-Socket::~Socket()
+Socket::Socket (int fd)
+: fd(fd)
 {
-    if (sock >= 0)
-    {
-        close(sock);
-    }
+   struct sockaddr sa;
+   size_t len;
+   getsockname(fd, &sa, &len);
+   protocolFamily = sa.sa_family;
+   this->option<SocketType>().get(protocolType);
 }
 
+Socket::~Socket()
+{
+    if (fd >= 0)
+    {
+        close(fd);
+    }
+}
 
 bool Socket::bind(uint16_t port)
 {
@@ -77,7 +86,7 @@ bool Socket::bind(const IPv4Addr& addr, uint16_t port)
     address.sin_port = htons(port);
     address.sin_addr = addr.getNetAddr();
     address.sin_family = protocolFamily;
-    if (!::bind ( sock, (sockaddr*)&address, sizeof( address ) ))
+    if (!::bind ( fd, (sockaddr*)&address, sizeof( address ) ))
         return true;
     std::cerr << "Unable to bind socpet with error : (" << errno << ") " << strerror(errno) << std::endl;
     return false;
@@ -85,18 +94,17 @@ bool Socket::bind(const IPv4Addr& addr, uint16_t port)
 
 bool Socket::setNonBlocking()
 {
-    int flags = fcntl(sock, F_GETFL, 0);
+    int flags = fcntl(fd, F_GETFL, 0);
     if (flags < 0)
     {
         std::cerr << "Unable to get flags : (" << errno << ") " << strerror(errno) << std::endl;
         return false;
     }
     flags |= O_NONBLOCK;
-    if (fcntl(sock, F_SETFL, flags) == 0)
+    if (fcntl(fd, F_SETFL, flags) == 0)
         return true;
     std::cerr << "Unable to set flags : (" << errno << ") " << strerror(errno) << std::endl;
     return false;
 }
 
-
-}
+} // namespace sockpp

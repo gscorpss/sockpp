@@ -5,7 +5,7 @@
 #include <arpa/inet.h>
 #include "NetEnums.h"
 
-namespace core
+namespace sockpp
 {
 
 class IPv4Addr
@@ -22,22 +22,16 @@ private:
     in_addr hostAddr;
 };
 
-class StaticMemBuffer
-{
-public:
-
-private:
-
-};
 
 class Socket
 {
 public:
-    Socket(ProtocolFamily::Enum family, ProtocolType::Enum type);
+    Socket(int fd);
+    Socket(ProtocolFamily family, ProtocolType type);
 
     ~Socket();
 
-    int getFd() { return sock; }
+    int getFd() { return fd; }
 
     bool bind(uint16_t port);
     bool bind(const IPv4Addr& addr, uint16_t port);
@@ -48,10 +42,11 @@ public:
     Option option() { Option o; o.setSocket(sock); return o; }
 
 private:
-    int sock;
-    ProtocolFamily::Enum protocolFamily;
-    ProtocolType::Enum protocolType;
+    int fd;
+    ProtocolFamily protocolFamily;
+    ProtocolType protocolType;
 };
 
-}
+} // namespace sockpp
+
 #endif // CORE_SOCKETS_H

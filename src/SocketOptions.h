@@ -2,8 +2,9 @@
 #define CORE_NET_SOCKET_OPTIONS_H
 
 #include <stdlib.h>
+#include "NetEnums.h"
 
-namespace core
+namespace sockpp
 {
 
 class IPv4Addr;
@@ -23,6 +24,11 @@ private:
     bool setOptionImpl(int sock, int level, int option, void* value, size_t valSize, const char* optionName);
 
     int sock;
+};
+
+struct SocketType : public SocketOption
+{
+    ProtocolType get();
 };
 
 struct Fragmentation : public SocketOption
@@ -58,6 +64,6 @@ struct Multicase : public SocketOption
     bool setTTL(u_int8_t ttl);
 };
 
-} // namespace core
+} // namespace sockpp
 
 #endif // CORE_NET_SOCKET_OPTIONS_H
