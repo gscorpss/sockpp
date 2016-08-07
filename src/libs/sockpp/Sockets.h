@@ -27,24 +27,19 @@ class Socket
 {
 public:
     Socket(int fd);
-    Socket(ProtocolFamily family, ProtocolType type);
+    Socket(ProtocolFamilyEnum family, ProtocolTypeEnum type);
 
     ~Socket();
 
     int getFd() { return fd; }
 
-    bool bind(uint16_t port);
-    bool bind(const IPv4Addr& addr, uint16_t port);
-
     bool setNonBlocking();
 
     template<class Option>
-    Option option() { Option o; o.setSocket(sock); return o; }
+    Option option() { Option o; o.setFd(fd); return o; }
 
 private:
     int fd;
-    ProtocolFamily protocolFamily;
-    ProtocolType protocolType;
 };
 
 } // namespace sockpp

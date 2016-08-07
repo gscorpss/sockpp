@@ -1,7 +1,5 @@
 #include "Sockets.h"
-#include <StringStream.h>
-#include <Exceptions.h>
-
+#include <stdexcept>
 #include <iostream>
 #include <fcntl.h>
 #include <cstring>
@@ -32,37 +30,30 @@ void IPv4Addr::init(const char* str)
 {
     if (!inet_aton(str, &hostAddr))
     {
-        StringStream stream;
+        std::stringstream stream;
         stream << '\'' << str << "' is not valid";
-        throw Exception(stream.c_str());
+        throw std::runtime_error(stream.c_str());
     }
 }
 
 /**
  * Socket class implementation
  **/
-Socket::Socket(ProtocolFamily family, ProtocolType type)
-: protocolFamily(family)
-, protocolType(type)
+Socket::Socket(ProtocolFamilyEnum family, ProtocolTypeEnum type)
 {
     fd = socket(family, type, 0);
     if (fd < 0)
     {
-        StringStream stream;
+        std::stringstream stream;
         stream << "Unable to create socket family=" << (int)family
             << " type=" << type << " with error";
-        throw ErrnoException(stream.c_str());
+        throw std::runtime_error(stream.c_str());
     }
 }
 
 Socket::Socket (int fd)
 : fd(fd)
 {
-   struct sockaddr sa;
-   size_t len;
-   getsockname(fd, &sa, &len);
-   protocolFamily = sa.sa_family;
-   this->option<SocketType>().get(protocolType);
 }
 
 Socket::~Socket()
@@ -71,25 +62,6 @@ Socket::~Socket()
     {
         close(fd);
     }
-}
-
-bool Socket::bind(uint16_t port)
-{
-    in_addr addr;
-    addr.s_addr = INADDR_ANY;
-    return bind(IPv4Addr(addr), port);
-}
-
-bool Socket::bind(const IPv4Addr& addr, uint16_t port)
-{
-    struct sockaddr_in address;
-    address.sin_port = htons(port);
-    address.sin_addr = addr.getNetAddr();
-    address.sin_family = protocolFamily;
-    if (!::bind ( fd, (sockaddr*)&address, sizeof( address ) ))
-        return true;
-    std::cerr << "Unable to bind socpet with error : (" << errno << ") " << strerror(errno) << std::endl;
-    return false;
 }
 
 bool Socket::setNonBlocking()

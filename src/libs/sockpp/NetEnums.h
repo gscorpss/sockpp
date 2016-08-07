@@ -6,7 +6,7 @@
 namespace sockpp
 {
 
-enum class ProtocolFamily
+enum class ProtocolFamilyEnum
 {
     NOTDEFINED = -1,
     /// \brief Local communication
@@ -33,7 +33,7 @@ enum class ProtocolFamily
     PACKET = AF_PACKET
 };
 
-enum class ProtocolType
+enum class ProtocolTypeEnum
 {
     NOTDEFINED = -1,
     STREAM = SOCK_STREAM,
