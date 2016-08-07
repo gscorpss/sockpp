@@ -5,6 +5,7 @@
 #include <cstring>
 #include <unistd.h>
 #include <errno.h>
+#include <sstream>
 
 namespace sockpp
 {
@@ -32,7 +33,7 @@ void IPv4Addr::init(const char* str)
     {
         std::stringstream stream;
         stream << '\'' << str << "' is not valid";
-        throw std::runtime_error(stream.c_str());
+        throw std::runtime_error(stream.str());
     }
 }
 
@@ -41,13 +42,13 @@ void IPv4Addr::init(const char* str)
  **/
 Socket::Socket(ProtocolFamilyEnum family, ProtocolTypeEnum type)
 {
-    fd = socket(family, type, 0);
+    fd = socket((int)family, (int)type, 0);
     if (fd < 0)
     {
         std::stringstream stream;
         stream << "Unable to create socket family=" << (int)family
-            << " type=" << type << " with error";
-        throw std::runtime_error(stream.c_str());
+            << " type=" << (int)type << " with error";
+        throw std::runtime_error(stream.str());
     }
 }
 

@@ -5,6 +5,7 @@
 #include <cstring>
 #include <errno.h>
 #include <iostream>
+#include <sstream>
 
 namespace sockpp
 {
@@ -23,15 +24,17 @@ bool Bind::port(uint16_t port)
 {
     in_addr addr;
     addr.s_addr = INADDR_ANY;
-    return bind(IPv4Addr(addr), port);
+    return addressPort(IPv4Addr(addr), port);
 }
 
 bool Bind::addressPort(const IPv4Addr& addr, uint16_t port)
 {
+    ProtocolFamily f;
+    f.setFd(getFd());
     struct sockaddr_in address;
     address.sin_port = htons(port);
     address.sin_addr = addr.getNetAddr();
-    address.sin_family = protocolFamily;
+    address.sin_family = (int)f.get();
     if (!::bind ( getFd(), (sockaddr*)&address, sizeof( address ) ))
         return true;
     std::cerr << "Unable to bind socpet with error : (" << errno << ") " << strerror(errno) << std::endl;
@@ -49,8 +52,8 @@ bool Listen::listen()
 bool Listen::addressPort(const IPv4Addr& addr, uint16_t port)
 {
     Bind b;
-    b.setFd(getFd(), port);
-    return b.port(port) && listen();
+    b.setFd(getFd());
+    return b.addressPort(addr, port) && listen();
 }
 
 bool Listen::port(uint16_t port)
@@ -64,17 +67,17 @@ bool Listen::port(uint16_t port)
 ProtocolFamilyEnum ProtocolFamily::get()
 {
    struct sockaddr sa;
-   size_t len;
+   socklen_t len;
    if (getsockname(getFd(), &sa, &len))
        return ProtocolFamilyEnum::NOTDEFINED;
    //TODO: log error
    return (ProtocolFamilyEnum)sa.sa_family;
 }
 
-ProtocolTypeEnum& ProtocolType::get()
+ProtocolTypeEnum ProtocolType::get()
 {
     int type;
-    int length = sizeof(type);
+    socklen_t length = sizeof(type);
     if (!getsockopt(getFd(), SOL_SOCKET, SO_TYPE, &type, &length) != 0)
         return ((ProtocolTypeEnum)type);
    //TODO: log error
