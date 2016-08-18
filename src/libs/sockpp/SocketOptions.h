@@ -12,31 +12,36 @@ class IPv4Addr;
 namespace options
 {
 
-class SocketOption
+class SocketGetter
 {
 public:
-    SocketOption() : fd(-1) {}
+    SocketGetter(): fd(-1) {}
     void setFd(int _fd) { fd = _fd; }
+    int getFd() { return fd; }
+private:
+    int fd;
+};
+
+class SocketOption : public SocketGetter
+{
 protected:
     template<class OptionValue>
     bool setOption(int level, int option, const OptionValue& optionValue, const char* optionName)
     {
-        return setOptionImpl(fd, level, option, (void*)&optionValue, sizeof(optionValue), optionName);
+        return setOptionImpl(getFd(), level, option, (void*)&optionValue, sizeof(optionValue), optionName);
     }
-    int getFd() { return fd; }
 private:
     bool setOptionImpl(int fd, int level, int option, void* value, size_t valSize, const char* optionName);
 
-    int fd;
 };
 
-struct Bind : public SocketOption
+struct Bind : public SocketGetter
 {
     bool port(uint16_t port);
     bool addressPort(const IPv4Addr& addr, uint16_t port);
 };
 
-struct Listen : public SocketOption
+struct Listen : public SocketGetter
 {
     bool listen();
     bool port(uint16_t port);
@@ -44,14 +49,10 @@ struct Listen : public SocketOption
 
 };
 
-struct ProtocolFamily : public SocketOption
+struct SocketTraits : public SocketGetter
 {
-    ProtocolFamilyEnum get();
-};
-
-struct ProtocolType : public SocketOption
-{
-    ProtocolTypeEnum get();
+    ProtocolFamilyEnum getProtocolFamily();
+    ProtocolTypeEnum getProtocolType();
 };
 
 struct Fragmentation : public SocketOption

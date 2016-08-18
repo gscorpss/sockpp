@@ -1,4 +1,5 @@
 .DEFAULT_GOAL := all
+
 clean:
 	rm -rf build bin lib
 

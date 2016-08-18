@@ -29,12 +29,12 @@ bool Bind::port(uint16_t port)
 
 bool Bind::addressPort(const IPv4Addr& addr, uint16_t port)
 {
-    ProtocolFamily f;
+    SocketTraits f;
     f.setFd(getFd());
     struct sockaddr_in address;
     address.sin_port = htons(port);
     address.sin_addr = addr.getNetAddr();
-    address.sin_family = (int)f.get();
+    address.sin_family = (int)f.getProtocolFamily();
     if (!::bind ( getFd(), (sockaddr*)&address, sizeof( address ) ))
         return true;
     std::cerr << "Unable to bind socpet with error : (" << errno << ") " << strerror(errno) << std::endl;
@@ -63,18 +63,17 @@ bool Listen::port(uint16_t port)
     return b.port(port) && listen();
 }
 
-
-ProtocolFamilyEnum ProtocolFamily::get()
+ProtocolFamilyEnum SocketTraits::getProtocolFamily()
 {
    struct sockaddr sa;
-   socklen_t len;
+   socklen_t len = sizeof(sa);
    if (getsockname(getFd(), &sa, &len))
        return ProtocolFamilyEnum::NOTDEFINED;
    //TODO: log error
    return (ProtocolFamilyEnum)sa.sa_family;
 }
 
-ProtocolTypeEnum ProtocolType::get()
+ProtocolTypeEnum SocketTraits::getProtocolType()
 {
     int type;
     socklen_t length = sizeof(type);
