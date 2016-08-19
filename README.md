@@ -1,3 +1,3 @@
 # README #
 
-This library present a lightweight wrappers around sockets. 
+This library presents a lightweight wrappers around sockets. 
