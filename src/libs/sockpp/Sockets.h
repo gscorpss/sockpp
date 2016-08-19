@@ -33,8 +33,6 @@ public:
 
     int getFd() { return fd; }
 
-    bool setNonBlocking();
-
     template<class Option>
     Option option() { Option o; o.setFd(fd); return o; }
 

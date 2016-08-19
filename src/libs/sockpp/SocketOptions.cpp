@@ -83,6 +83,51 @@ ProtocolTypeEnum SocketTraits::getProtocolType()
     return ProtocolTypeEnum::NOTDEFINED;
 }
 
+bool NonBlocking::isNonBlocking()
+{
+    int flags = fcntl(getFd(), F_GETFL, 0);
+    if (flags < 0)
+    {
+        std::cerr << "Unable to get flags : (" << errno << ") " << strerror(errno) << std::endl;
+        return false;
+    }
+    return flags & O_NONBLOCK;
+}
+
+bool NonBlocking::set (bool nonBlocking)
+{
+    int flags = fcntl(getFd(), F_GETFL, 0);
+    if (flags < 0)
+    {
+        std::cerr << "Unable to get flags : (" << errno << ") " << strerror(errno) << std::endl;
+        return false;
+    }
+    if ((flags & O_NONBLOCK) == nonBlocking)
+        return true;
+    if (!nonBlocking)
+    {
+        flags &= O_NONBLOCK;
+        flags %= O_NONBLOCK;
+    }
+    else
+        flags |= O_NONBLOCK;
+    if (fcntl(getFd(), F_SETFL, flags) == 0)
+        return true;
+    std::cerr << "Unable to set flags : (" << errno << ") " << strerror(errno) << std::endl;
+    return false;
+}
+
+bool NonBlocking::setBlocking()
+{
+    set(false);
+}
+
+bool NonBlocking::setNonBlocking()
+{
+    set(true);
+}
+
+
 bool Fragmentation::probe()
 {
     return this->setOption(SOL_IP, IP_MTU_DISCOVER, int(IP_PMTUDISC_PROBE), "probe ip packets fragmentation");

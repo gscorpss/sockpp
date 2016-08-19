@@ -55,6 +55,14 @@ struct SocketTraits : public SocketGetter
     ProtocolTypeEnum getProtocolType();
 };
 
+struct NonBlocking : public SocketGetter
+{
+    bool isNonBlocking();
+    bool setNonBlocking();
+    bool setBlocking();
+    bool set(bool nonBlocking);
+};
+
 struct Fragmentation : public SocketOption
 {
     bool probe();

@@ -65,19 +65,4 @@ Socket::~Socket()
     }
 }
 
-bool Socket::setNonBlocking()
-{
-    int flags = fcntl(fd, F_GETFL, 0);
-    if (flags < 0)
-    {
-        std::cerr << "Unable to get flags : (" << errno << ") " << strerror(errno) << std::endl;
-        return false;
-    }
-    flags |= O_NONBLOCK;
-    if (fcntl(fd, F_SETFL, flags) == 0)
-        return true;
-    std::cerr << "Unable to set flags : (" << errno << ") " << strerror(errno) << std::endl;
-    return false;
-}
-
 } // namespace sockpp
