@@ -12,13 +12,22 @@ namespace sockpp
 namespace options
 {
 
-bool SocketOption::setOptionImpl(int sock, int level, int option, void* value, size_t valSize, const char* optionName)
+bool SocketOption::setOptionImpl(int level, int option, void* value, socklen_t valSize, const char* optionName)
 {
-    if (!setsockopt (sock, level, option, value, valSize))
+    if (!setsockopt(getFd(), level, option, value, valSize))
         return true;
     std::cerr << "Unable to set option '" << optionName << "' with error: (" << errno << ") " << strerror(errno) << std::endl;
     return false;
 }
+
+bool SocketOption::getOptionImpl(int level, int option, void* value, socklen_t valSize, const char* optionName)
+{
+    if (!getsockopt(getFd(), level, option, value, &valSize))
+        return true;
+    std::cerr << "Unable to get option '" << optionName << "' with error: (" << errno << ") " << strerror(errno) << std::endl;
+    return false;
+}
+
 
 bool Bind::port(uint16_t port)
 {

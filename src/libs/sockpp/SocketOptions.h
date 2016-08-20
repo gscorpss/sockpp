@@ -28,11 +28,16 @@ protected:
     template<class OptionValue>
     bool setOption(int level, int option, const OptionValue& optionValue, const char* optionName)
     {
-        return setOptionImpl(getFd(), level, option, (void*)&optionValue, sizeof(optionValue), optionName);
+        return setOptionImpl(level, option, (void*)&optionValue, sizeof(optionValue), optionName);
+    }
+    template<class OptionValue>
+    bool getOptionValue(int level, int option, const OptionValue& optionValue, const char* optionName)
+    {
+        return setOptionImpl(level, option, (void*)&optionValue, sizeof(optionValue), optionName);
     }
 private:
-    bool setOptionImpl(int fd, int level, int option, void* value, size_t valSize, const char* optionName);
-
+    bool setOptionImpl(int level, int option, void* value, socklen_t valSize, const char* optionName);
+    bool getOptionImpl(int level, int option, void* value, socklen_t valSize, const char* optionName);
 };
 
 struct Bind : public SocketGetter
@@ -46,7 +51,6 @@ struct Listen : public SocketGetter
     bool listen();
     bool port(uint16_t port);
     bool addressPort(const IPv4Addr& addr, uint16_t port);
-
 };
 
 struct SocketTraits : public SocketGetter
