@@ -10,6 +10,12 @@
 
 namespace sockpp
 {
+
+IPv4Addr operator"" _ipv4(const char* str)
+{
+    return IPv4Addr(str);
+}
+
 /**
  * IPv4Addr implementation
  **/

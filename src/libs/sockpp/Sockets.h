@@ -8,6 +8,7 @@
 namespace sockpp
 {
 
+
 class IPv4Addr
 {
 public:
@@ -22,6 +23,7 @@ private:
     in_addr hostAddr;
 };
 
+IPv4Addr operator"" _ipv4(const char* str);
 
 class Socket
 {
