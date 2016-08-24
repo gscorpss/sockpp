@@ -1,4 +1,4 @@
-#include "SocketOptions.h"
+#include "SocketOperations.h"
 #include "Sockets.h"
 #include <fcntl.h>
 #include <arpa/inet.h>
@@ -9,7 +9,7 @@
 
 namespace sockpp
 {
-namespace options
+namespace operations
 {
 
 bool SocketOption::setOptionImpl(int sock, int level, int option, void* value, size_t valSize, const char* optionName)
@@ -199,7 +199,7 @@ bool Multicase::setTTL(u_int8_t ttl)
     return this->setOption(IPPROTO_IP, IP_MULTICAST_TTL, ttl, "set multicast ttl");
 }
 
-} // namespace options
+} // namespace operations
 } // namespace sockpp
 
 

@@ -1,5 +1,5 @@
-#ifndef CORE_NET_SOCKET_OPTIONS_H
-#define CORE_NET_SOCKET_OPTIONS_H
+#ifndef CORE_NET_SOCKET_OPERATIONS_H
+#define CORE_NET_SOCKET_OPERATIONS_H
 
 #include <stdlib.h>
 #include "NetEnums.h"
@@ -9,7 +9,7 @@ namespace sockpp
 
 class IPv4Addr;
 
-namespace options
+namespace operations
 {
 
 class SocketGetter
@@ -96,7 +96,7 @@ struct Multicase : public SocketOption
     bool setTTL(u_int8_t ttl);
 };
 
-} // namespace options
+} // namespace operations
 } // namespace sockpp
 
-#endif // CORE_NET_SOCKET_OPTIONS_H
+#endif // CORE_NET_SOCKET_OPERATIONS_H

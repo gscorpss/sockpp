@@ -33,8 +33,8 @@ public:
 
     int getFd() { return fd; }
 
-    template<class Option>
-    Option option() { Option o; o.setFd(fd); return o; }
+    template<class Operation>
+    Operation operation() { Operation o; o.setFd(fd); return o; }
 
 private:
     int fd;

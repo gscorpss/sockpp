@@ -1,4 +1,5 @@
 #include "Sockets.h"
+#include "Exceptions.h"
 #include <stdexcept>
 #include <iostream>
 #include <fcntl.h>
@@ -35,6 +36,7 @@ void IPv4Addr::init(const char* str)
         stream << '\'' << str << "' is not valid";
         throw std::runtime_error(stream.str());
     }
+    hostAddr.s_addr = ntohl(hostAddr.s_addr);
 }
 
 /**
@@ -48,7 +50,7 @@ Socket::Socket(ProtocolFamilyEnum family, ProtocolTypeEnum type)
         std::stringstream stream;
         stream << "Unable to create socket family=" << (int)family
             << " type=" << (int)type << " with error";
-        throw std::runtime_error(stream.str());
+        throw Exception(stream.str());
     }
 }
 
