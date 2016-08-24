@@ -1,5 +1,6 @@
 
 add_library(sockpp SHARED
     Sockets.cpp
-    SocketOptions.cpp
+    SocketOperations.cpp
+    Exceptions.cpp
     )
