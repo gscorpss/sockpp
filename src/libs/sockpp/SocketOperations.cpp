@@ -1,11 +1,11 @@
-#include "SocketOperations.h"
-#include "Sockets.h"
 #include <fcntl.h>
 #include <arpa/inet.h>
 #include <cstring>
 #include <errno.h>
 #include <iostream>
-#include <sstream>
+#include "Sockets.h"
+#include "IPv4Addr.h"
+#include "SocketOperations.h"
 
 namespace sockpp
 {
@@ -62,6 +62,24 @@ bool Listen::port(uint16_t port)
     b.setFd(getFd());
     return b.port(port) && listen();
 }
+
+bool Connect::connect(const IPv4Addr& addr, uint16_t port)
+{
+    SocketTraits t;
+    t.setFd(getFd());
+
+    sockaddr_in saddr;
+    saddr.sin_addr = addr.getNetAddr();
+    saddr.sin_port = htons(port);
+    saddr.sin_family = (int)t.getProtocolFamily();
+    if (!::connect(getFd(), (sockaddr*)&saddr, sizeof(saddr)))
+    {
+        return true;
+    }
+    //TODO: log error
+    return false;
+}
+
 
 ProtocolFamilyEnum SocketTraits::getProtocolFamily()
 {

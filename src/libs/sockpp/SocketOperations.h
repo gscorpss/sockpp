@@ -49,6 +49,11 @@ struct Listen : public SocketGetter
 
 };
 
+struct Connect : public SocketGetter
+{
+    bool connect(const IPv4Addr& addr, uint16_t port);
+};
+
 struct SocketTraits : public SocketGetter
 {
     ProtocolFamilyEnum getProtocolFamily();
