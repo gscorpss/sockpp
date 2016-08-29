@@ -4,4 +4,5 @@ add_library(sockpp SHARED
     SocketOperations.cpp
     Exceptions.cpp
     IPv4Addr.cpp
+    Epoller.cpp
     )

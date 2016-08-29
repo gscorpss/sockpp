@@ -42,10 +42,4 @@ void IPv4Addr::init(const char* str)
     }
 }
 
-IPv4Addr operator"" _ipv4(const char* str)
-{
-    return IPv4Addr(str);
-}
-
-
 } // namespace sockpp
