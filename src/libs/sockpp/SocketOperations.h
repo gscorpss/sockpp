@@ -54,8 +54,17 @@ struct Connect : public SocketGetter
     bool connect(const IPv4Addr& addr, uint16_t port);
 };
 
+struct Data : public SocketGetter
+{
+    size_t sendTo(const IPv4Addr& addr, uint16_t port, void* buffer, size_t size);
+
+};
+
+
 struct SocketTraits : public SocketGetter
 {
+    SocketTraits() {}
+    SocketTraits(int fd);
     ProtocolFamilyEnum getProtocolFamily();
     ProtocolTypeEnum getProtocolType();
 };
