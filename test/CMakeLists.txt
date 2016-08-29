@@ -37,3 +37,18 @@ add_test(
     NAME Ipv4AddrTest
     COMMAND $<TARGET_FILE:Ipv4AddrTest>
     )
+
+add_executable(EpollerTest
+    EpollerTest.cpp
+    )
+
+target_link_libraries(EpollerTest
+    ${GTEST_BOTH_LIBRARIES}
+    pthread
+    sockpp
+    )
+
+add_test(
+    NAME EpollerTest
+    COMMAND $<TARGET_FILE:EpollerTest>
+    )

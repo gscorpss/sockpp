@@ -22,8 +22,6 @@ private:
     in_addr netAddr;
 };
 
-IPv4Addr operator"" _ipv4(const char* str);
-
 } // namespace sockpp
 
 #endif //SOCKPP_IPV4ADDR_H

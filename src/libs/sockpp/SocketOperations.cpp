@@ -65,19 +65,34 @@ bool Listen::port(uint16_t port)
 
 bool Connect::connect(const IPv4Addr& addr, uint16_t port)
 {
-    SocketTraits t;
-    t.setFd(getFd());
-
     sockaddr_in saddr;
     saddr.sin_addr = addr.getNetAddr();
     saddr.sin_port = htons(port);
-    saddr.sin_family = (int)t.getProtocolFamily();
+    saddr.sin_family = (int)SocketTraits(getFd()).getProtocolFamily();
     if (!::connect(getFd(), (sockaddr*)&saddr, sizeof(saddr)))
     {
         return true;
     }
     //TODO: log error
     return false;
+}
+
+size_t Data::sendTo(const IPv4Addr& addr, uint16_t port, void* buffer, size_t size)
+{
+    sockaddr_in saddr;
+    saddr.sin_family = (int)SocketTraits(getFd()).getProtocolFamily();
+    saddr.sin_addr = addr.getNetAddr();
+    saddr.sin_port = htons(port);
+    size_t res = ::sendto(getFd(), buffer, size, 0, (sockaddr*)&saddr, sizeof(saddr));
+    if (res != -1)
+        return res;
+    return false;
+}
+
+SocketTraits::SocketTraits (int fd)
+:SocketGetter()
+{
+    setFd(fd);
 }
 
 
