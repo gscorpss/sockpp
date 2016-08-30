@@ -24,4 +24,7 @@ private:
 
 } // namespace sockpp
 
+inline sockpp::IPv4Addr operator"" _ipv4(const char* str, size_t s) { return sockpp::IPv4Addr(str); }
+
+
 #endif //SOCKPP_IPV4ADDR_H
