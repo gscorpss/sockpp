@@ -31,6 +31,12 @@ Socket::Socket (int fd)
 {
 }
 
+Socket::Socket(Socket&& sock)
+: fd(sock.fd)
+{
+    sock.fd = -1;
+}
+
 Socket::~Socket()
 {
     if (fd >= 0)

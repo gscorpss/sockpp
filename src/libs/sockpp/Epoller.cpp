@@ -7,6 +7,7 @@
 #include "Epoller.h"
 #include "Sockets.h"
 #include "Exceptions.h"
+#include "SocketOperations.h"
 
 const int MaxEvent = 100;
 
@@ -56,10 +57,10 @@ bool Epoller::subscribe (EpollSubscription& subscription, Socket& socket, sockpp
     epoll_event event;
     event.events = (unsigned int)events;
     event.data.ptr = &subscription;
-    subscription.fd = socket.getFd();
+    subscription.fd = socket.operation<operations::SocketGetter>().getFd();
     subscription.events = events;
     subscription.epoller = this;
-    if (epoll_ctl(epollHndl, EpollCtlOperation::Add, socket.getFd(), &event))
+    if (epoll_ctl(epollHndl, EpollCtlOperation::Add, socket.operation<operations::SocketGetter>().getFd(), &event))
     {
         std::cerr << "Unable to register epoll event with error: (" << errno << ") " << strerror(errno) << std::endl;
         return false;
