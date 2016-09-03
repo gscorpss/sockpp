@@ -11,10 +11,10 @@ class Socket
 public:
     Socket(int fd);
     Socket(ProtocolFamilyEnum family, ProtocolTypeEnum type);
+    Socket(Socket&& sock);
+    Socket(const Socket&) = delete;
 
     ~Socket();
-
-    int getFd() { return fd; }
 
     template<class Operation>
     Operation operation() { Operation o; o.setFd(fd); return o; }

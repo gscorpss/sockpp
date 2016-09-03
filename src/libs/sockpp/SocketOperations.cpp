@@ -152,12 +152,12 @@ bool NonBlocking::set (bool nonBlocking)
 
 bool NonBlocking::setBlocking()
 {
-    set(false);
+    return set(false);
 }
 
 bool NonBlocking::setNonBlocking()
 {
-    set(true);
+    return set(true);
 }
 
 

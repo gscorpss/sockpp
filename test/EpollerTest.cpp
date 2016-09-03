@@ -25,7 +25,7 @@ private:
 TEST(EpollerTest, SubsribeUnsubsribe)
 {
     sockpp::Socket socket(sockpp::ProtocolFamilyEnum::INET, sockpp::ProtocolTypeEnum::DGRAM);
-    bool bindRes = socket.operation<sockpp::operations::Bind>().addressPort(sockpp::IPv4Addr("127.0.0.1"), 32767);
+    bool bindRes = socket.operation<sockpp::operations::Bind>().addressPort("127.0.0.1", 32767);
     Subsription subscriptionSock1(sockpp::EpollEventType::IN);
     EXPECT_EQ(bindRes, true);
 
