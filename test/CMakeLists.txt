@@ -1,4 +1,3 @@
-
 find_package(GTest REQUIRED)
 
 include_directories(
@@ -6,49 +5,23 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/src/libs SYSTEM
     )
 
+function(AddUnitTest name src linklib)
+    add_executable(${name}
+        ${src}
+        )
 
-add_executable(SocketTest
-    SocketTest.cpp
-    )
+    target_link_libraries(${name}
+        ${GTEST_BOTH_LIBRARIES}
+        pthread
+        ${linklib}
+        )
 
-target_link_libraries(SocketTest
-    ${GTEST_BOTH_LIBRARIES}
-    pthread
-    sockpp
-    )
+    add_test(
+        NAME ${name}
+        COMMAND $<TARGET_FILE:${name}>
+        )
+endfunction(AddUnitTest)
 
-add_test(
-    NAME SocketTest
-    COMMAND $<TARGET_FILE:SocketTest>
-    )
-
-
-add_executable(Ipv4AddrTest
-    Ipv4AddrTest.cpp
-    )
-
-target_link_libraries(Ipv4AddrTest
-    ${GTEST_BOTH_LIBRARIES}
-    pthread
-    sockpp
-    )
-
-add_test(
-    NAME Ipv4AddrTest
-    COMMAND $<TARGET_FILE:Ipv4AddrTest>
-    )
-
-add_executable(EpollerTest
-    EpollerTest.cpp
-    )
-
-target_link_libraries(EpollerTest
-    ${GTEST_BOTH_LIBRARIES}
-    pthread
-    sockpp
-    )
-
-add_test(
-    NAME EpollerTest
-    COMMAND $<TARGET_FILE:EpollerTest>
-    )
+AddUnitTest(SocketTest SocketTest.cpp sockpp)
+AddUnitTest(Ipv4AddrTest Ipv4AddrTest.cpp sockpp)
+AddUnitTest(EpollerTest EpollerTest.cpp sockpp)
