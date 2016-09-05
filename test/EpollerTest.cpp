@@ -24,7 +24,7 @@ private:
 
 TEST(EpollerTest, SubsribeUnsubsribe)
 {
-    sockpp::Socket socket(sockpp::ProtocolFamilyEnum::INET, sockpp::ProtocolTypeEnum::DGRAM);
+    sockpp::NetSocket socket(sockpp::ProtocolFamilyEnum::INET, sockpp::ProtocolTypeEnum::DGRAM);
     bool bindRes = socket.operation<sockpp::operations::Bind>().addressPort("127.0.0.1", 32767);
     Subsription subscriptionSock1(sockpp::EpollEventType::IN);
     EXPECT_EQ(bindRes, true);
@@ -32,7 +32,7 @@ TEST(EpollerTest, SubsribeUnsubsribe)
     sockpp::Epoller epoller;
     EXPECT_EQ(epoller.subscribe(subscriptionSock1, socket, sockpp::EpollEventType::IN), true);
     EXPECT_EQ(epoller.poll(0), 0);
-    sockpp::Socket socket2(sockpp::ProtocolFamilyEnum::INET, sockpp::ProtocolTypeEnum::DGRAM);
+    sockpp::NetSocket socket2(sockpp::ProtocolFamilyEnum::INET, sockpp::ProtocolTypeEnum::DGRAM);
     char testData[]="1234";
     EXPECT_EQ(socket.operation<sockpp::operations::Data>().sendTo("127.0.0.1", 32767, testData, sizeof(testData)), sizeof(testData));
     EXPECT_EQ(epoller.poll(1), 1);

@@ -14,17 +14,6 @@ namespace sockpp
 /**
  * Socket class implementation
  **/
-Socket::Socket(ProtocolFamilyEnum family, ProtocolTypeEnum type)
-{
-    fd = socket((int)family, (int)type, 0);
-    if (fd < 0)
-    {
-        std::stringstream stream;
-        stream << "Unable to create socket family=" << (int)family
-            << " type=" << (int)type << " with error";
-        throw Exception(stream.str());
-    }
-}
 
 Socket::Socket (int fd)
 : fd(fd)
@@ -44,5 +33,29 @@ Socket::~Socket()
         close(fd);
     }
 }
+
+bool Socket::isValid() const
+{
+    return fd >= 0;
+}
+
+NetSocket::NetSocket(ProtocolFamilyEnum family, ProtocolTypeEnum type)
+: Socket(socket((int)family, (int)type, 0))
+{
+    if (!isValid())
+    {
+        std::stringstream stream;
+        stream << "Unable to create socket family=" << (int)family
+            << " type=" << (int)type;
+        throw ErrnoException(stream.str());
+    }
+}
+
+NetSocket::NetSocket(NetSocket&& sock)
+: Socket(std::move(sock))
+{
+
+}
+
 
 } // namespace sockpp
